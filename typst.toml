@@ -7,3 +7,4 @@ license = "MIT"
 description = "Numbering helper."
 categories = ["utility"]
 keywords = ["numbering", "helper", "tool"]
+repository = "https://github.com/ParaN3xus/numblex"

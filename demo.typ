@@ -1,7 +1,12 @@
 #import "lib.typ": *
 
 #set heading(
-  numbering: numblex(numberings: ("一.", "1.", "(1).", circle_numbers), depth: (1, 1, 2, 4)),
+  numbering: numblex(
+    "一.",
+    "1.",
+    (numbering: "(1).", depth: 2),
+    (numbering: circle_numbers, depth: 4),
+  ),
 )
 
 = 你说得对

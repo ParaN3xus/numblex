@@ -1,12 +1,31 @@
 /// Numblex main function
 ///
-/// docs TBD
+/// - `numberings`: A tuple of numbering styles. Each style can be a string or a function.
+/// - `depth`: A tuple of depths for each numbering style.
+/// - `..styles`: A list of styles. If provided, `numberings` and `depth` will be ignored.
+///
+/// The depth means the level of shown (upper) numbering, default is 1(only show the level at present).
+///
+/// Example usage:
+/// ```typst
+/// set heading(numbering: numblex(numberings: ("一.", "1.", "(1).", circle_numbers), depth: (1, 1, 2, 4)))
+///
+/// set heading(numbering: numblex(
+///   "一.",
+///   "1.",
+///   (numbering: "(1).", depth: 2),
+///   (numbering: circle_numbers, depth: 4),
+/// ))
+/// ```
 #let numblex(numberings: (none,), depth: (1,), ..styles) = {
   styles = styles.pos()
   if styles.len() > 0 {
     numberings = ()
     depth = ()
     for s in styles {
+      if type(s) == str {
+        s = (numbering: s, depth: 1)
+      }
       assert("numbering" in s, message: "numblex: style must have a 'numbering' field")
       assert("depth" in s, message: "numblex: style must have a 'depth' field")
       assert(type(s.numbering) in (function, str), message: "numblex: 'numbering' field must be a function or a string")

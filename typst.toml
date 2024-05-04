@@ -1,6 +1,6 @@
 [package]
 name = "numblex"
-version = "0.1.0"
+version = "0.1.1"
 entrypoint = "lib.typ"
 authors = ["ParaN3xus <@ParaN3xus>", "sjfhsjfh <@sjfhsjfh>"]
 license = "MIT"

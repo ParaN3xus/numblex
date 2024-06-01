@@ -1,5 +1,6 @@
 # Typst
 
+debug*
 *.pdf
 
 # Mac OS

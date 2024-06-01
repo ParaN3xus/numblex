@@ -4,17 +4,32 @@
 /// --------
 /// type: "ord"
 /// func: `(<positional>n: int, <named>depth: int) => str`
-#let ord(f) = (type: "ord", func: f)
+#let ord(f) = {
+  if type(f) == str {
+    import "ordinals.typ": ordinal_funcs
+    assert(
+      f in ordinal_funcs,
+      message: "Unknown ordinal: " + f,
+    )
+    return (type: "ord", func: ordinal_funcs.at(f))
+  }
+  return (type: "ord", func: f)
+}
 
-#let ord_pref(o, prefix: "") = ord((..args) => prefix + (o.func)(..args))
-
-#let ord_suff(o, suffix: "") = ord((..args) => (o.func)(..args) + suffix)
+#let ord_mod(o, prefix: "", suffix: "") = {
+  return ord((..args) => prefix + (o.func)(..args) + suffix)
+}
 
 /// Constants
 /// ---------
 /// type: "const"
 /// func: `(<named>depth: int) => str`
-#let const(f) = (type: "const", func: f)
+#let const(f) = {
+  if type(f) == str {
+    return (type: "const", func: (..args) => f)
+  }
+  return (type: "const", func: f)
+}
 
 #let const_from_str(s) = {
   return const((..args) => s)

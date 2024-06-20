@@ -116,7 +116,9 @@
 
 == Numbering
 
-Numbering is just a function that takes a list of numbers and returns a string. The result string could be like this
+Numbering is just a function that takes a list of numbers and returns a string. And this function can be used as the value of the `numbering` option in Typst.
+
+For example, the numbering function could return a string like this:
 
 #align(center)[
   #set text(size: 16pt)
@@ -136,13 +138,11 @@ We can split the string into several parts, and each part is an element.
   ).join([])
 ]
 
-_Automatic repeating (which Typst official numbering supports) is not supported yet._
-
 == Element
 
 The elements are categorized into two types: ordinals and constants. Here "<", "-", ">" are constants, and "1", "(3).", "4." are ordinals.
 
-The element can be different in different contexts. For example, we might need them not to show up when the depth is not enough, or show up in different forms according to the depth.
+We use the following format to represent the whole numbering
 
 == Numbering String
 
@@ -184,7 +184,7 @@ However, #nblx has also modified and extended the ordinal definition.
 
 _Use single character to represent the ordinal if possible, since Typst have complicated rules to handle the prefix and suffix of the numbering._
 
-// TODO: Conditions format
+The element can be different in different contexts. For example, we might need them to show up in different forms according to the depth.
 
 == Conditions
 
@@ -230,13 +230,31 @@ Leave the condition empty is equivalent to `true`.
   scope: (numblex: numblex),
 )
 
-== Reference
+#code(
+  ```Typst
+  #set heading(numbering: numblex("{[一]、:d==1}{[1].:d==2}{[(1)]}"))
+  = 保角变换
+  == 介绍
+  === 调和函数的保角性
+  ```,
+  scope: (numblex: numblex),
+)
 
-#show heading.where(level: 3): entry
+= Reference
 
-=== `numblex`
+#show heading.where(level: 2): entry
 
-==== Parameters
+The package provides a function `numblex` to generate the numbering function for Typst.
+
+== `numblex`
+
+=== Parameters
 
 - #positional `s`
 - #named `..options`
+
+= Known Issues & Limitations
+
++ Automatic repeating (which Typst official numbering supports) is not supported yet.
+
++ Character escaping for "{}[]:;" is not supported yet.

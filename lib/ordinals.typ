@@ -40,7 +40,7 @@
 
 #let ordinal_funcs = (
   "": (n, ..args) => "",
-  "(1)": (n, ..args) => replast_ord_from_str("⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿"),
+  "(1)": replast_ord_from_str("⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿"),
   // "1": (n, ..args) => {
   //   assert(type(n) == int, message: "ordinals: argument must be an integer")
   //   return str(n)

@@ -1,4 +1,6 @@
 #import "@preview/pinit:0.1.4": *
+#import "@preview/showybox:2.0.1": showybox as sb
+#import "@preview/badgery:0.1.1" as bgy
 
 // Copied from https://github.com/typst-doc-cn/tutorial/blob/main/src/mod.typ
 #let exec-code(cc, res: none, scope: (:), eval: eval) = {
@@ -62,6 +64,49 @@
   box[#name]
 }
 
+#let nblx = [numblex]
+
+#let positional = [#set text(size: 8pt);#box(bgy.badge-red("positional"), baseline: 30%)]
+#let named = [#set text(size: 8pt);#box(bgy.badge-gray("named"), baseline: 30%)]
+
+#let warning(doc) = {
+  let warning_mark = [
+    #place(horizon + center)[
+      #polygon.regular(fill: none, stroke: 0.05em, vertices: 3, size: 1em)
+    ]
+    #place(horizon + center)[
+      #v(0.16em)
+      #set text(font: "Avenir Next", weight: "semibold", size: 0.5em)
+      !
+    ]
+  ]
+  sb(
+    frame: (
+      border-color: red.darken(50%),
+      title-color: red.lighten(60%),
+      body-color: red.lighten(80%),
+    ),
+    title-style: (
+      color: black,
+      weight: "regular",
+      align: left,
+    ),
+    shadow: (
+      offset: 3pt,
+    ),
+    title: stack(
+      dir: ltr,
+      spacing: 5pt,
+      align(horizon, [#set text(size: 15pt);#h(10pt)#warning_mark]),
+      [
+        #set text(size: 14pt)
+        Warning
+      ],
+    ),
+    doc,
+  )
+}
+
 // Manual content
 #align(center)[#text(size: 24pt)[Numblex 0.2 Manual]]
 
@@ -75,22 +120,25 @@ Numbering is just a function that takes a list of numbers and returns a string. 
 
 #align(center)[
   #set text(size: 16pt)
-  ~\<1-(3).4.\>
+  #"<1-(3).4.>"
 ]
 
-We can split the string into several parts
+We can split the string into several parts, and each part is an element.
 
 #align(center)[
+  #let colors = (blue, green, yellow, red, purple, orange)
   #set text(size: 16pt)
-  ~#pin(0)\<#pin(1)1#pin(2)-#pin(3);(3).#pin(4)4.#pin(5)\>#pin(6)
+  #(
+    "< 1 - (3). 4. >".split(" ").zip(colors).map(x => box(
+      inset: (bottom: 0.4em, top: 0.2em),
+      fill: x.at(1).transparentize(60%),
+    )[#x.at(0)])
+  ).join([])
 ]
-#let style = (stroke: (thickness: 1pt, paint: black.transparentize(70%)), radius: 0pt)
-#pinit-highlight(0, 1, fill: blue.transparentize(60%), ..style)
-#pinit-highlight(1, 2, fill: green.transparentize(60%), ..style)
-#pinit-highlight(2, 3, fill: yellow.transparentize(60%), ..style)
-#pinit-highlight(3, 4, fill: red.transparentize(60%), ..style)
-#pinit-highlight(4, 5, fill: purple.transparentize(60%), ..style)
-#pinit-highlight(5, 6, fill: orange.transparentize(60%), ..style)
+
+_Automatic repeating (which Typst official numbering supports) is not supported yet._
+
+== Element
 
 The elements are categorized into two types: ordinals and constants. Here "<", "-", ">" are constants, and "1", "(3).", "4." are ordinals.
 
@@ -105,19 +153,82 @@ The Typst official numbering string is not powerful enough, we usually need to s
   `{<} {[1]} {-} {([3]).} {[4].} {>}`
 ]
 
-Each element is enclosed in a pair of curly braces(`{}`), and anything else is ignored. The element can be a constant(with no `[]` in it) or an ordinal(with `[]` in it).
+Each element is enclosed in a pair of curly braces(`{}`), and anything else is ignored. The element can be a constant(with no `[]` in it) or an ordinal(with `[]` in it). The ordinal element is only displayed when the depth is enough.
+
+== Patterns
+
+Patterns are used to represent the ordinal or constant. The ordinal will be replaced by the final ordinal string in the output numbering, and anything outside the `[]` will be kept as it is.
+
+#align(center)[
+  #set text(size: 16pt)
+  `{Chapter [1].}` $=>$ Chapter 1.
+]
+
+Of course, this is designed to avoid the following problem:
+
+#code(```Typst
+#set heading(numbering: "Chapter 1.")
+= Once Upon a Time
+#set heading(numbering: "Ch\apter 1.")
+= Once Upon a Time
+```)
+
+== Ordinals
+
+Most of the time, you can just put the character corresponding to the ordinal you want in the `[]`. #nblx passes the character to the `numbering` function in Typst to get the ordinal.
+
+However, #nblx has also modified and extended the ordinal definition.
+
+- `[]`: an empty string, it takes the number but generates nothing.
+- `[(1)]`: shorthand for circled numbers (①, ②, ③, ...). If you want the ordinal (1), (2), (3), ..., please use `{([1])}` instead.
+
+_Use single character to represent the ordinal if possible, since Typst have complicated rules to handle the prefix and suffix of the numbering._
 
 // TODO: Conditions format
 
 == Conditions
 
-Conditions are functions that take the current numbering configuration and return a boolean value. Currently the following configuration options are defined:
+Conditions are functions that take the current numbering configuration and return a boolean value. The condition match is executed sequentially, and the first match will be used.
 
-=== Depth: `int`
+Currently the following configuration context are defined:
+
+=== depth: `int` (short: `d`)
 
 The depth of the numbering.
 
 From Typst v0.11.1 on, we can use heading.depth to get the depth of the heading. Similarly, we introduce the numbering depth, which is the length of the list of numbers passed to the numbering function.
+
+#warning[
+  The condition here is implemented using `eval`, which is not safe and might cause other problems.
+]
+
+You may represent a conditional element using the following format:
+
+#align(center)[
+  #set text(size: 16pt)
+  `{PAT_1:COND_1;PAT_2:COND_2;...}`
+]
+
+Leave the condition empty is equivalent to `true`.
+
+#align(center)[
+  #set text(size: 16pt)
+  `{PAT_1:COND_1;PAT_2}` $=$ `{PATTERN_1:COND_1;PAT_2:true}`
+]
+
+== Examples
+
+#import "./lib.typ": numblex
+
+#code(
+  ```Typst
+  #set heading(numbering: numblex("{Section [A].:d==1;[A].}{[1].}{[1])}"))
+  = Electrostatic Field
+  == Introduction
+  === Gauss's Law
+  ```,
+  scope: (numblex: numblex),
+)
 
 == Reference
 
@@ -126,3 +237,6 @@ From Typst v0.11.1 on, we can use heading.depth to get the depth of the heading.
 === `numblex`
 
 ==== Parameters
+
+- #positional `s`
+- #named `..options`

@@ -40,12 +40,15 @@
 
 #let ordinal_funcs = (
   "": (n, ..args) => "",
-  "1": (n, ..args) => {
-    assert(type(n) == int, message: "ordinals: argument must be an integer")
-    return str(n)
-  },
-  "a": replast_ord_from_str("-abcdefghijklmnopqrstuvwxyz"),
-  "A": replast_ord_from_str("-ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-  "一": replast_ord_from_str("〇一二三四五六七八九十"),
+  "(1)": (n, ..args) => replast_ord_from_str("⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿"),
+  // "1": (n, ..args) => {
+  //   assert(type(n) == int, message: "ordinals: argument must be an integer")
+  //   return str(n)
+  // },
+  // "a": replast_ord_from_str("-abcdefghijklmnopqrstuvwxyz"),
+  // "A": replast_ord_from_str("-ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+  // "〇": replast_ord_from_str("〇一二三四五六七八九十"),
+  // "零": replast_ord_from_str("零一二三四五六七八九十"),
   // TODO: add more ordinals
+  // necessary?
 )

@@ -7,7 +7,14 @@
   if ":" in s {
     let (_s, cond_str) = s.split(":")
     s = _s
-    cond = (..args) => eval(cond_str, mode: "code", scope: (d: args.named().depth))
+    cond = (..args) => eval(
+      cond_str,
+      mode: "code",
+      scope: (
+        d: args.named().depth,
+        depth: args.named().depth,
+      ),
+    )
   }
   if regex("\[.*\]") in s {
     // Ordinal

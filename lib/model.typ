@@ -7,10 +7,13 @@
 #let ord(f) = {
   if type(f) == str {
     import "ordinals.typ": ordinal_funcs
-    assert(
-      f in ordinal_funcs,
-      message: "Unknown ordinal: " + f,
-    )
+    // assert(
+    //   f in ordinal_funcs,
+    //   message: "Unknown ordinal: " + f,
+    // )
+    if f not in ordinal_funcs {
+      return (type: "ord", func: (n, ..args) => numbering(f, n))
+    }
     return (type: "ord", func: ordinal_funcs.at(f))
   }
   return (type: "ord", func: f)
@@ -78,7 +81,7 @@
 /// Constructs a numbering function from parsed numbering structure
 ///
 /// - elements: A list of Ordinal | Const
-#let to_numbering(..elements) = {
+#let to_numbering(..elements, repeat: none) = {
   elements = elements.pos()
   return (..nums) => {
     nums = nums.pos()
@@ -87,13 +90,18 @@
     let res = ""
     for e in elements {
       if e.type == "ord" {
-        if cur_ind < nums.len() {
-          res += (e.func)(nums.at(cur_ind), depth: depth)
-          cur_ind += 1
+        // Ignore the ordinal if the depth is not enough
+        if cur_ind >= depth {
+          continue
         }
+        res += (e.func)(nums.at(cur_ind), depth: depth)
+        cur_ind += 1
       } else if e.type == "const" {
         res += (e.func)(depth: depth)
       }
+    }
+    if repeat != none {
+      assert(false, message: "Not implemented yet")
     }
     return res
   }

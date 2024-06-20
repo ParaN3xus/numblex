@@ -58,6 +58,9 @@
   }
 }
 
+#let package = toml("./typst.toml").package
+#let version = package.version
+
 #let entry(name, type: "function") = {
   set box(inset: 0.3em, radius: 0.3em)
   box(fill: purple.transparentize(80%))[#raw(type)]
@@ -108,7 +111,7 @@
 }
 
 // Manual content
-#align(center)[#text(size: 24pt)[Numblex 0.2 Manual]]
+#align(center)[#text(size: 24pt)[Numblex #version Manual]]
 
 // #outline()
 

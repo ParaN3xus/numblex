@@ -240,6 +240,16 @@ Leave the condition empty is equivalent to `true`.
   scope: (numblex: numblex),
 )
 
+#code(
+  ```Typst
+  #let example = numblex("{<} {[1]} {-:d>=2} {([1]).} {[1].} {>}")
+  #numbering(example, 1) \
+  #numbering(example, 1, 3) \
+  #numbering(example, 1, 3, 4)
+  ```,
+  scope: (numblex: numblex),
+)
+
 = Reference
 
 #show heading.where(level: 2): entry

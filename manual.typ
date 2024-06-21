@@ -216,8 +216,10 @@ Leave the condition empty is equivalent to `true`.
 
 #align(center)[
   #set text(size: 16pt)
-  `{PAT_1:COND_1;PAT_2}` $=$ `{PATTERN_1:COND_1;PAT_2:true}`
+  `{PAT_1:COND_1;PAT_2}` $equiv$ `{PATTERN_1:COND_1;PAT_2:true}`
 ]
+
+If no condition is matched, the element will return an empty string. _Notice that `[]` must appear in none(constant element) or all(ordinal element) of the patterns._
 
 == Examples
 
